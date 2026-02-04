@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mini Blog — Utilisateurs</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Mini Blog — Utilisateurs 👤</h1>
+
+      <div class="button-container">
+        <button onclick="toggleForm('createForm')" class="btn">
+          Créer un compte
+        </button>
+        <button onclick="toggleForm('modifyForm')" class="btn">
+          Modifier compte
+        </button>
+        <button onclick="toggleForm('deleteForm')" class="btn">
+          Supprimer compte
+        </button>
+      </div>
+
+      <form
+        id="createForm"
+        action="/users"
+        method="POST"
+        class="form"
+        style="display: none"
+      >
+        <input
+          type="text"
+          name="username"
+          placeholder="Nom d'utilisateur"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Mot de passe"
+          required
+        />
+        <button type="submit">Confirmer création</button>
+      </form>
+
+      <form
+        id="modifyForm"
+        action="/users"
+        method="POST"
+        class="form"
+        style="display: none"
+        onsubmit="return setModifyAction(this)"
+      >
+        <input
+          type="text"
+          name="userId"
+          placeholder="ID de l'utilisateur"
+          required
+        />
+        <input
+          type="text"
+          name="newUsername"
+          placeholder="Nouveau nom"
+          required
+        />
+        <input
+          type="password"
+          name="newPassword"
+          placeholder="Nouveau mot de passe"
+          required
+        />
+        <button type="submit">Confirmer modification</button>
+      </form>
+
+      <form
+        id="deleteForm"
+        action="/users"
+        method="POST"
+        class="form"
+        style="display: none"
+        onsubmit="return setDeleteAction(this)"
+      >
+        <input
+          type="text"
+          name="userId"
+          placeholder="ID de l'utilisateur"
+          required
+        />
+        <button type="submit">Confirmer suppression</button>
+      </form>
+
+      <div class="users-list">
+        <% if (users.length > 0) { %>
+        <h3>Utilisateurs existants :</h3>
+        <ul>
+          <% users.forEach(user => { %>
+          <li>ID: <%= user.id %> - <%= user.username %></li>
+          <% }) %>
+        </ul>
+        <% } %>
+      </div>
+    </div>
+
+    <script>
+      function toggleForm(formId) {
+        document.querySelectorAll(".form").forEach((form) => {
+          form.style.display = "none";
+        });
+        const form = document.getElementById(formId);
+        form.style.display = "block";
+      }
+      function setModifyAction(form) {
+        const userId = form.querySelector('input[name="userId"]').value;
+        form.action = `/users/${userId}`;
+        return true;
+      }
+
+      function setDeleteAction(form) {
+        const userId = form.querySelector('input[name="userId"]').value;
+        form.action = `/users/${userId}?_method=DELETE`;
+        return true;
+      }
+    </script>
+  </body>
+</html>
