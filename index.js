@@ -1,5 +1,5 @@
 import express from "express";
-import { Pool } from "pg";
+import { Pool } from "./db.js";
 import methodOverride from "method-override";
 import dotenv from "dotenv";
 dotenv.config();
@@ -12,14 +12,6 @@ app.use(methodOverride("_method"));
 
 app.set("view engine", "ejs");
 app.set("views", "./views");
-
-const pool = new Pool({
-  user: process.env.DB_postgres,
-  host: process.env.DB_localhost,
-  database: process.env.DB_miniblog,
-  password: process.env.DB_password,
-  port: 5432,
-});
 
 app.get("/", async (req, res) => {
   try {
@@ -97,7 +89,6 @@ app.delete("/users/:id", async (req, res) => {
 });
 
 app.post("/users/:id", async (req, res) => {
-  // Gère la suppression via method-override
   if (req.query._method === "DELETE") {
     const { id } = req.params;
     try {
@@ -113,6 +104,6 @@ app.post("/users/:id", async (req, res) => {
     }
   }
 });
-app.listen(3000, () => {
-  console.log(" Serveur lancé sur http://localhost:3000");
+app.listen(process.env.PORT || 3000, () => {
+  console.log(" Server is running on port ");
 });
